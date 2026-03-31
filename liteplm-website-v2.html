@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LitePLM — Lightweight PLM for Automotive SMEs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI',Arial,sans-serif;color:#1a202c;background:#fff;}
+:root{
+  --navy:#1F3864;--blue:#2B6CB0;--lblue:#4A90D9;--teal:#0D9488;
+  --green:#16A34A;--amber:#D97706;--red:#DC2626;--purple:#7C3AED;
+  --gray:#6B7280;--lgray:#F5F7FA;--border:#E2E8F0;
+}
+
+/* ── NAV ── */
+nav{background:var(--navy);padding:0 48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:62px;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.nav-logo{color:#fff;font-size:24px;font-weight:700;letter-spacing:-0.5px;text-decoration:none;}
+.nav-logo span{color:#4A90D9;}
+.nav-links{display:flex;gap:26px;list-style:none;}
+.nav-links a{color:#B5D4F4;text-decoration:none;font-size:13px;transition:color 0.2s;}
+.nav-links a:hover{color:#fff;}
+.nav-cta{background:var(--teal);color:#fff;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;}
+.nav-cta:hover{background:#0a7a70;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#1F3864 0%,#163059 40%,#0D3355 70%,#0D9488 100%);padding:88px 48px 72px;color:#fff;}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#9FE1CB;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:500;margin-bottom:18px;letter-spacing:0.6px;}
+.hero h1{font-size:44px;font-weight:700;line-height:1.15;margin-bottom:16px;}
+.hero h1 em{font-style:normal;color:#9FE1CB;}
+.hero p{font-size:17px;color:#B5D4F4;line-height:1.7;margin-bottom:30px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-white{background:#fff;color:var(--navy);padding:12px 28px;border-radius:7px;font-size:14px;font-weight:700;text-decoration:none;}
+.btn-white:hover{background:#E6F1FB;}
+.btn-outline-w{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.45);padding:12px 28px;border-radius:7px;font-size:14px;font-weight:500;text-decoration:none;}
+.btn-outline-w:hover{border-color:#fff;}
+.hero-right{display:flex;flex-direction:column;gap:12px;}
+.hero-module{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;}
+.hm-dot{width:38px;height:38px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.hm-title{font-size:14px;font-weight:600;color:#fff;}
+.hm-sub{font-size:12px;color:#9FE1CB;margin-top:2px;}
+.hero-stats{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap;}
+.hstat-val{font-size:32px;font-weight:700;color:#fff;}
+.hstat-lbl{font-size:11px;color:#9FE1CB;margin-top:2px;}
+
+/* ── SHARED ── */
+.wrapper{max-width:1100px;margin:0 auto;}
+section{padding:72px 48px;}
+.sec-badge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.6px;margin-bottom:12px;}
+.sec-badge.blue{background:#E6F1FB;color:var(--blue);}
+.sec-badge.teal{background:#E1F5EE;color:var(--teal);}
+.sec-badge.amber{background:#FAEEDA;color:var(--amber);}
+.sec-badge.red{background:#FEE2E2;color:var(--red);}
+.sec-badge.purple{background:#EEEDFE;color:var(--purple);}
+.sec-badge.green{background:#DCFCE7;color:var(--green);}
+h2.sec-h{font-size:34px;font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:12px;}
+p.sec-sub{font-size:16px;color:var(--gray);line-height:1.7;max-width:640px;}
+.center{text-align:center;}
+.center p.sec-sub{margin-left:auto;margin-right:auto;}
+.bg-gray{background:var(--lgray);}
+.bg-navy{background:var(--navy);}
+.divider{height:1px;background:var(--border);max-width:1100px;margin:0 auto;}
+
+/* ── PROBLEM STRIP ── */
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:36px;}
+.prob-card{background:#fff;border-radius:8px;padding:16px 18px;border-left:3px solid var(--red);}
+.prob-card h4{font-size:13px;font-weight:600;color:#7F1D1D;margin-bottom:5px;}
+.prob-card p{font-size:12px;color:#991B1B;line-height:1.55;}
+.solution-note{margin-top:28px;background:#EAF3DE;border-radius:8px;padding:14px 20px;border-left:3px solid var(--green);font-size:13px;color:#166534;}
+
+/* ── MODULE CARDS ── */
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;margin-top:40px;}
+.mod-card{background:#fff;border:0.5px solid var(--border);border-radius:12px;padding:26px;transition:box-shadow 0.2s,transform 0.15s;}
+.mod-card:hover{box-shadow:0 8px 24px rgba(31,56,100,0.1);transform:translateY(-3px);}
+.mod-icon{width:44px;height:44px;border-radius:10px;margin-bottom:14px;}
+.mod-card h3{font-size:17px;font-weight:600;color:var(--navy);margin-bottom:7px;}
+.mod-card p{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:12px;}
+.mod-list{list-style:none;}
+.mod-list li{font-size:12px;color:#374151;padding:2px 0 2px 14px;position:relative;}
+.mod-list li::before{content:"✓";position:absolute;left:0;color:var(--teal);font-weight:700;}
+.mod-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:3px;margin-bottom:10px;}
+
+/* ── WORKFLOW ── */
+.workflow-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;margin-top:40px;position:relative;}
+.wf-step{text-align:center;padding:20px 12px;position:relative;}
+.wf-step:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:28px;font-size:22px;color:var(--lblue);font-weight:700;}
+.wf-num{width:46px;height:46px;border-radius:50%;background:var(--navy);color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.wf-step h4{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:5px;}
+.wf-step p{font-size:11px;color:var(--gray);line-height:1.5;}
+.wf-sub{font-size:10px;background:var(--lgray);border-radius:4px;padding:3px 8px;display:inline-block;margin-top:5px;color:var(--gray);}
+
+/* ── RACI TABLE ── */
+.raci-wrap{overflow-x:auto;margin-top:36px;}
+table.raci{width:100%;border-collapse:collapse;font-size:12px;}
+table.raci th{background:var(--navy);color:#fff;padding:10px 14px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap;}
+table.raci td{padding:9px 14px;border-bottom:0.5px solid var(--border);vertical-align:top;}
+table.raci tr:hover td{background:#F0F6FF;}
+.raci-ar{background:#DCFCE7;color:#14532D;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;white-space:nowrap;}
+.raci-r{background:#E6F1FB;color:#1e3a5f;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;}
+.raci-c{background:#FAEEDA;color:#633806;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;}
+.raci-i{background:#F1EFE8;color:#444441;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;}
+.raci-dash{color:var(--gray);font-size:11px;}
+
+/* ── TECH STACK ── */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:36px;}
+.tech-card{background:#fff;border:0.5px solid var(--border);border-radius:10px;padding:18px 14px;text-align:center;}
+.tech-dot{width:10px;height:10px;border-radius:50%;margin:0 auto 10px;}
+.tech-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:3px;}
+.tech-role{font-size:11px;color:var(--gray);}
+
+/* ── ROADMAP ── */
+.roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px;}
+.rm-card{border-radius:10px;padding:22px;border:0.5px solid var(--border);}
+.rm-ver{font-size:10px;font-weight:700;letter-spacing:0.8px;margin-bottom:8px;}
+.rm-name{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.rm-dur{font-size:11px;color:var(--gray);margin-bottom:12px;}
+.rm-list{list-style:none;}
+.rm-list li{font-size:12px;color:#374151;padding:3px 0 3px 14px;position:relative;border-bottom:0.5px solid var(--border);}
+.rm-list li:last-child{border:none;}
+.rm-list li::before{content:"›";position:absolute;left:0;color:var(--blue);font-weight:700;}
+.rm-cost{margin-top:12px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:4px;display:inline-block;}
+
+/* ── COMPARE ── */
+.compare-wrap{overflow-x:auto;margin-top:36px;}
+table.compare{width:100%;border-collapse:collapse;font-size:12px;}
+table.compare th{background:var(--navy);color:#fff;padding:11px 14px;text-align:left;font-size:11px;font-weight:600;}
+table.compare th.hl{background:var(--teal);}
+table.compare td{padding:10px 14px;border-bottom:0.5px solid var(--border);}
+table.compare td.hl{background:#EAF3DE;font-weight:500;}
+table.compare tr:hover td{background:#F0F6FF;}
+.chk{color:var(--green);font-weight:700;}
+.crs{color:var(--red);}
+.amb{color:var(--amber);}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;margin-top:40px;}
+.price-card{border-radius:12px;padding:28px;border:0.5px solid var(--border);background:#fff;position:relative;}
+.price-card.feat{border:2px solid var(--teal);}
+.feat-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:3px 14px;border-radius:20px;font-size:11px;font-weight:600;}
+.price-tier{font-size:11px;font-weight:700;letter-spacing:0.8px;color:var(--gray);margin-bottom:8px;}
+.price-amt{font-size:34px;font-weight:700;color:var(--navy);}
+.price-amt span{font-size:15px;font-weight:400;color:var(--gray);}
+.price-desc{font-size:13px;color:var(--gray);margin:8px 0 18px;line-height:1.6;}
+.price-list{list-style:none;margin-bottom:20px;}
+.price-list li{font-size:12px;color:#374151;padding:5px 0;border-bottom:0.5px solid var(--border);padding-left:16px;position:relative;}
+.price-list li::before{content:"✓";position:absolute;left:0;color:var(--teal);}
+.price-btn{display:block;text-align:center;padding:10px;border-radius:7px;font-size:13px;font-weight:600;text-decoration:none;}
+.pb-outline{border:1.5px solid var(--navy);color:var(--navy);}
+.pb-solid{background:var(--navy);color:#fff;}
+.pb-teal{background:var(--teal);color:#fff;}
+
+/* ── LLM SECTION ── */
+.llm-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:40px;align-items:start;}
+.llm-feature{display:flex;gap:14px;margin-bottom:18px;}
+.llm-dot{width:36px;height:36px;border-radius:8px;flex-shrink:0;}
+.llm-feature h4{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.llm-feature p{font-size:12px;color:var(--gray);line-height:1.6;}
+.llm-right{background:var(--lgray);border-radius:10px;padding:24px;border:0.5px solid var(--border);}
+
+/* ── GOVERNANCE ── */
+.gov-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px;}
+.gov-card{border-radius:10px;padding:22px;border:0.5px solid var(--border);}
+.gov-card h4{font-size:15px;font-weight:600;margin-bottom:12px;}
+.gov-list{list-style:none;}
+.gov-list li{font-size:12px;padding:5px 0;border-bottom:0.5px solid var(--border);padding-left:14px;position:relative;color:#374151;}
+.gov-list li::before{content:"·";position:absolute;left:0;font-weight:700;}
+.gov-list li:last-child{border:none;}
+
+/* ── CTA ── */
+.cta-sec{background:var(--navy);color:#fff;padding:72px 48px;text-align:center;}
+.cta-sec h2{color:#fff;font-size:34px;font-weight:700;margin-bottom:12px;}
+.cta-sec p{color:#B5D4F4;font-size:16px;max-width:500px;margin:0 auto 32px;line-height:1.7;}
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:480px;margin:0 auto;}
+.cta-input{flex:1;min-width:200px;padding:11px 16px;border-radius:6px;border:none;font-size:14px;}
+.cta-sub{background:var(--teal);color:#fff;border:none;padding:11px 24px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;}
+.cta-note{margin-top:16px;font-size:12px;color:#B5D4F4;}
+
+/* ── FOOTER ── */
+footer{background:#111827;color:#9CA3AF;padding:52px 48px 28px;}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1100px;margin:0 auto 40px;}
+.foot-logo{font-size:22px;font-weight:700;color:#fff;margin-bottom:10px;}
+.foot-logo span{color:var(--lblue);}
+.foot-desc{font-size:12px;line-height:1.7;}
+.foot-col h5{font-size:12px;font-weight:600;color:#fff;margin-bottom:12px;letter-spacing:0.5px;}
+.foot-col ul{list-style:none;}
+.foot-col li{font-size:12px;padding:3px 0;}
+.foot-col a{color:#9CA3AF;text-decoration:none;}
+.foot-col a:hover{color:#fff;}
+.foot-bottom{border-top:0.5px solid #374151;padding-top:18px;max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;}
+
+@media(max-width:768px){
+  .hero-inner,.llm-grid,.gov-grid,.foot-grid{grid-template-columns:1fr;}
+  nav{padding:0 16px;} .nav-links{display:none;}
+  section{padding:48px 20px;}
+  .hero{padding:56px 20px 48px;}
+  .hero h1{font-size:30px;}
+  .wf-step:not(:last-child)::after{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Lite<span>PLM</span></a>
+  <ul class="nav-links">
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#workflow">Workflow</a></li>
+    <li><a href="#raci">RACI</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Request Demo</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner wrapper">
+    <div>
+      <div class="hero-badge">IATF 16949 · APQP · BOM · ECN · CAD Integration</div>
+      <h1>Product Lifecycle<br>Management — <em>Made Lean</em></h1>
+      <p>Replace Excel + VBA with a modern, cloud-based PLM built on Microsoft 365 you already own. BOM management, change control, APQP, IATF compliance and AI-assisted engineering — all in one system.</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-white">Request Free Demo</a>
+        <a href="#modules" class="btn-outline-w">Explore Modules</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hstat-val">95%</div><div class="hstat-lbl">Teamcenter feature parity</div></div>
+        <div><div class="hstat-val">₹0</div><div class="hstat-lbl">Extra license cost</div></div>
+        <div><div class="hstat-val">14 wk</div><div class="hstat-lbl">Basic version go-live</div></div>
+        <div><div class="hstat-val">3</div><div class="hstat-lbl">Deployment versions</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-module">
+        <div class="hm-dot" style="background:#2B6CB0;"></div>
+        <div><div class="hm-title">BOM Management</div><div class="hm-sub">Part numbers · Tree view · Revisions · Where-used</div></div>
+      </div>
+      <div class="hero-module">
+        <div class="hm-dot" style="background:#D97706;"></div>
+        <div><div class="hm-title">Change Management (ECN/DCN)</div><div class="hm-sub">CN auto-generation · Approval routing · Audit trail</div></div>
+      </div>
+      <div class="hero-module">
+        <div class="hm-dot" style="background:#7C3AED;"></div>
+        <div><div class="hm-title">APQP Tracking</div><div class="hm-sub">5-phase tracking · PPAP · OEM CSR compliance</div></div>
+      </div>
+      <div class="hero-module">
+        <div class="hm-dot" style="background:#16A34A;"></div>
+        <div><div class="hm-title">IATF 16949 Compliance</div><div class="hm-sub">Document control · Approval flow · Audit export</div></div>
+      </div>
+      <div class="hero-module">
+        <div class="hm-dot" style="background:#0D9488;"></div>
+        <div><div class="hm-title">SAP / ERP Integration</div><div class="hm-sub">Real-time stock · Price data · Part alias mapping</div></div>
+      </div>
+      <div class="hero-module">
+        <div class="hm-dot" style="background:#DC2626;"></div>
+        <div><div class="hm-title">AI — LLM Drawing Assistant</div><div class="hm-sub">Scan drawing → auto-extract BOM + specs</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section style="background:#fff;">
+  <div class="wrapper">
+    <div class="sec-badge red">THE PROBLEM</div>
+    <h2 class="sec-h">Still running PLM on Excel + VBA?</h2>
+    <p class="sec-sub">Most Indian Tier-2 and Tier-3 automotive suppliers manage BOM, part numbers and change history in Excel — causing these problems daily.</p>
+    <div class="problem-grid">
+      <div class="prob-card"><h4>Single user lockout</h4><p>Only one person can edit BOM at a time. Team collaboration is impossible.</p></div>
+      <div class="prob-card"><h4>No IATF audit trail</h4><p>Auditors ask "who changed what and when?" — Excel has no answer.</p></div>
+      <div class="prob-card"><h4>VBA macro failures</h4><p>Macros break on Office updates causing production delays and data loss.</p></div>
+      <div class="prob-card"><h4>Part number duplication</h4><p>No validation — duplicate PNs create BOM errors in SAP and on shop floor.</p></div>
+      <div class="prob-card"><h4>No approval workflow</h4><p>Anyone can release a part — no manager sign-off, no engineering review.</p></div>
+      <div class="prob-card"><h4>Teamcenter too costly</h4><p>Enterprise PLM costs ₹50,000+/user/year — out of reach for SME suppliers.</p></div>
+    </div>
+    <div class="solution-note">
+      <strong>LitePLM solves all of this</strong> — using Microsoft 365 tools you already own (SharePoint, Power Apps, Power Automate, Power BI). Zero new license cost. 14-week go-live. Customer owns all data under NDA.
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section id="modules" class="bg-gray">
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge blue">MODULES</div>
+      <h2 class="sec-h">Complete PLM — 6 integrated modules</h2>
+      <p class="sec-sub">Each module is a standalone Power Apps application — deploy only what you need, add more as you grow.</p>
+    </div>
+    <div class="modules-grid">
+
+      <div class="mod-card">
+        <div class="mod-tag" style="background:#E6F1FB;color:#0C447C;">MODULE 1</div>
+        <div class="mod-icon" style="background:#E6F1FB;width:44px;height:44px;border-radius:10px;"></div>
+        <h3>BOM Management</h3>
+        <p>Complete Bill of Materials with parent-child tree, 10 form modules, revision control, model usage and IATF-compliant change tracking.</p>
+        <ul class="mod-list">
+          <li>Add / Edit / Remove / Add Existing part</li>
+          <li>BOM tree — indented parent-child view</li>
+          <li>Save As — new BOM revision (BVR_ID)</li>
+          <li>Alias — SAP number link per part</li>
+          <li>Model Usage Assign + Where Used view</li>
+          <li>Standard Part Generator (Bolts / Bearings)</li>
+          <li>Search dashboard — full text filter</li>
+          <li>Auto CN / DCN number generation</li>
+          <li>Release status: Draft → WIP → Released</li>
+          <li>Part type: Proto → Pre-Launch → Production</li>
+        </ul>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-tag" style="background:#FAEEDA;color:#633806;">MODULE 2</div>
+        <div class="mod-icon" style="background:#FAEEDA;width:44px;height:44px;border-radius:10px;"></div>
+        <h3>Change Management (ECN / DCN)</h3>
+        <p>Full engineering change notice workflow — from initiation through approval to implementation — with complete traceability for IATF audits.</p>
+        <ul class="mod-list">
+          <li>CN / WO creation with auto numbering</li>
+          <li>Impact analysis — which parts are affected</li>
+          <li>Multi-level approval routing</li>
+          <li>Digital sign-off per reviewer role</li>
+          <li>Email notifications at each stage</li>
+          <li>Edit closed WO / CN (Admin only)</li>
+          <li>Full CN / DCN audit register export</li>
+          <li>Link CN to APQP phase and BOM revision</li>
+        </ul>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-tag" style="background:#EEEDFE;color:#26215C;">MODULE 3</div>
+        <div class="mod-icon" style="background:#EEEDFE;width:44px;height:44px;border-radius:10px;"></div>
+        <h3>APQP Tracking</h3>
+        <p>Advanced Product Quality Planning phase management from Proto to SOP — with PPAP element checklist, milestone tracking and OEM CSR compliance.</p>
+        <ul class="mod-list">
+          <li>5-phase APQP timeline dashboard</li>
+          <li>PPAP element checklist (18 elements)</li>
+          <li>Customer milestone tracking</li>
+          <li>Proto / Pre-Launch / SOP readiness gates</li>
+          <li>OEM CSR — Tata, Mahindra, Bajaj, Ford</li>
+          <li>Open action item tracker</li>
+          <li>KPI: on-time completion rate</li>
+          <li>Power BI APQP progress dashboard</li>
+        </ul>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-tag" style="background:#DCFCE7;color:#173404;">MODULE 4</div>
+        <div class="mod-icon" style="background:#DCFCE7;width:44px;height:44px;border-radius:10px;"></div>
+        <h3>IATF 16949 Compliance</h3>
+        <p>Built-in quality management system tracking aligned with IATF 16949 clauses — document control, approval evidence, audit trail and management review.</p>
+        <ul class="mod-list">
+          <li>Clause 7.5 — documented information</li>
+          <li>Clause 8.3 — design and development</li>
+          <li>Clause 8.4 — supplier control records</li>
+          <li>Clause 7.2 — competence evidence trail</li>
+          <li>Clause 8.7 — nonconforming output control</li>
+          <li>Document library with version control</li>
+          <li>One-click IATF audit export pack (CSV)</li>
+          <li>Management review KPI report</li>
+        </ul>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-tag" style="background:#E1F5EE;color:#04342C;">MODULE 5</div>
+        <div class="mod-icon" style="background:#E1F5EE;width:44px;height:44px;border-radius:10px;"></div>
+        <h3>SAP / ERP Integration</h3>
+        <p>Connect LitePLM to SAP ERP or S/4HANA to pull real-time stock availability, price data and plant location — merged directly into your BOM view.</p>
+        <ul class="mod-list">
+          <li>SAP REST API / Excel Add-In connector</li>
+          <li>Real-time stock availability per part</li>
+          <li>Plant location visibility</li>
+          <li>Price data merged with BOM</li>
+          <li>SAP number aliasing from LitePLM PN</li>
+          <li>Power BI Stock + Price dashboard</li>
+          <li>BOM cost roll-up visualization</li>
+          <li>Supplier communication package export</li>
+        </ul>
+      </div>
+
+      <div class="mod-card">
+        <div class="mod-tag" style="background:#FEE2E2;color:#501313;">MODULE 6 — AI</div>
+        <div class="mod-icon" style="background:#FEE2E2;width:44px;height:44px;border-radius:10px;"></div>
+        <h3>LLM — AI Drawing Assistant</h3>
+        <p>Scan an engineering drawing — LitePLM's AI assistant automatically reads it and extracts BOM data, specifications, tolerances and process details.</p>
+        <ul class="mod-list">
+          <li>Scan PDF / image / CAD export</li>
+          <li>Auto-extract part names, numbers, quantities</li>
+          <li>Auto-extract material, revision, tolerances</li>
+          <li>Generate structured BOM table from drawing</li>
+          <li>Read process notes and DFM flags</li>
+          <li>Auto-fill LitePLM fields (desc, material, supplier)</li>
+          <li>Contextual query — ask questions about drawing</li>
+          <li>BOM ready for review and approval</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RELEASE WORKFLOW -->
+<section id="workflow">
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge amber">RELEASE WORKFLOW</div>
+      <h2 class="sec-h">Part release — from creation to production</h2>
+      <p class="sec-sub">Every part follows a controlled release workflow. Assy parts release only when all child parts are released first. CAD and drawing editable only by part owner before release.</p>
+    </div>
+    <div class="workflow-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <h4>Create part number</h4>
+        <p>Owner creates LitePLM PN. Fills name, description, qty, where-used.</p>
+        <span class="wf-sub">PLM00001/01</span>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <h4>Upload CAD / Drawing</h4>
+        <p>Upload to centralised SharePoint volume. Flag for 3D view.</p>
+        <span class="wf-sub">Preliminary Release</span>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <h4>Send for review</h4>
+        <p>CN raised. Child parts, part owners, CAD/GD&T checks, validation.</p>
+        <span class="wf-sub">Sample Build Release</span>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <h4>Digital sign-off</h4>
+        <p>Reviewers approve digitally. No open revisions allowed before release.</p>
+        <span class="wf-sub">Production Release</span>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <h4>Alias + SAP link</h4>
+        <p>Customer PN and SAP number aliased. Status moves to Released.</p>
+        <span class="wf-sub">PLM PN → SAP PN</span>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">6</div>
+        <h4>Revision / Supersede</h4>
+        <p>New rev created for minor drawing changes. Part superseded when replaced.</p>
+        <span class="wf-sub">PLM00001/02</span>
+      </div>
+    </div>
+    <div style="margin-top:28px;background:#E6F1FB;border-radius:8px;padding:16px 20px;border-left:3px solid var(--blue);">
+      <strong style="color:#0C447C;">BOM structure rule:</strong>
+      <span style="font-size:13px;color:#185FA5;"> Main Assy (PLM001) → Sub Assy (PLM002) → Product Part (PLMXX). Assembly parts release only after all children are released. Part owner controls CAD / Drawing edits before release.</span>
+    </div>
+  </div>
+</section>
+
+<!-- RACI -->
+<section id="raci" class="bg-gray">
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge purple">ROLES & ACCESS</div>
+      <h2 class="sec-h">RACI — role-based access control</h2>
+      <p class="sec-sub">LitePLM has five defined roles — Super Admin, Admin, User (Designer), Viewer Advanced, and Viewer. Every activity has a clear owner.</p>
+    </div>
+    <div class="raci-wrap">
+      <table class="raci">
+        <thead>
+          <tr>
+            <th style="width:280px;">PLM Activity</th>
+            <th>Super Admin</th>
+            <th>Admin</th>
+            <th>User / Designer</th>
+            <th>Viewer Advanced</th>
+            <th>Viewer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>System setup, workflow coding, Power Automate design</td><td><span class="raci-ar">A/R</span></td><td><span class="raci-c">C</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>User management — add, remove, assign reviewers</td><td><span class="raci-c">C</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Create new part number / document</td><td><span class="raci-c">C</span></td><td><span class="raci-c">C</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Create / Edit Bill of Materials (BOM)</td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Initiate Change Notice (CN / ECO)</td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-c">C</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Approve / Reject Change Notice</td><td><span class="raci-c">C</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-r">R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Edit Closed WO / CN</td><td><span class="raci-c">C</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Upload BOM / APQP / IATF documents</td><td><span class="raci-c">C</span></td><td><span class="raci-r">R</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Approve workflows (CN, APQP, IATF)</td><td><span class="raci-c">C</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-r">R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Search / View released product data</td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-r">R</span></td></tr>
+          <tr><td>View dashboards — SharePoint embedded</td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-r">R</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-ar">A/R</span></td></tr>
+          <tr><td>View dashboards — Power BI full (filter, mobile)</td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-r">R</span></td><td><span class="raci-i">I</span></td><td><span class="raci-ar">A/R</span></td></tr>
+          <tr><td>Generate detailed reports (BI)</td><td><span class="raci-i">I</span></td><td><span class="raci-i">I</span></td><td><span class="raci-c">C</span></td><td><span class="raci-r">R</span></td><td><span class="raci-i">I</span></td></tr>
+          <tr><td>Audit / Compliance review (read-only)</td><td><span class="raci-c">C</span></td><td><span class="raci-r">R</span></td><td><span class="raci-r">R</span></td><td><span class="raci-ar">A/R</span></td><td><span class="raci-ar">A/R</span></td></tr>
+          <tr><td>Configure / update system workflows</td><td><span class="raci-ar">A/R</span></td><td><span class="raci-c">C</span></td><td><span class="raci-dash">—</span></td><td><span class="raci-dash">—</span></td><td><span class="raci-dash">—</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;font-size:11px;">
+      <span><span class="raci-ar">A/R</span> Accountable + Responsible</span>
+      <span><span class="raci-r">R</span> Responsible</span>
+      <span><span class="raci-c">C</span> Consulted</span>
+      <span><span class="raci-i">I</span> Informed</span>
+      <span><span class="raci-dash">—</span> Not involved</span>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section>
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge teal">TECHNOLOGY STACK</div>
+      <h2 class="sec-h">Built on Microsoft 365 — tools you already own</h2>
+      <p class="sec-sub">LitePLM runs entirely on your existing M365 Business Standard or E3 license. No new servers. No new software. No extra infrastructure burden.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card"><div class="tech-dot" style="background:#2B6CB0;"></div><div class="tech-name">SharePoint Lists</div><div class="tech-role">Cloud DB — 7 lists, document library</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#0D9488;"></div><div class="tech-name">Power Apps</div><div class="tech-role">UI — 5 screens, 10 form modules</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#7C3AED;"></div><div class="tech-name">Power Automate</div><div class="tech-role">Automation — 4+ approval flows</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#16A34A;"></div><div class="tech-name">Power BI</div><div class="tech-role">Dashboards (Desktop free)</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#D97706;"></div><div class="tech-name">SAP / ERP API</div><div class="tech-role">Stock, price, plant data</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#1F3864;"></div><div class="tech-name">Azure SQL</div><div class="tech-role">Upgrade path — Year 2+</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#DC2626;"></div><div class="tech-name">LLM / AI</div><div class="tech-role">Drawing scan → auto BOM</div></div>
+      <div class="tech-card"><div class="tech-dot" style="background:#374151;"></div><div class="tech-name">Azure DevOps</div><div class="tech-role">Optional: CI/CD for web version</div></div>
+    </div>
+    <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div style="background:#E6F1FB;border-radius:8px;padding:14px 18px;border-left:3px solid var(--blue);font-size:13px;color:#185FA5;">
+        <strong>Microsoft toolkit:</strong> M365 Business Standard / E3 + Power Apps Premium + Power Automate + Power BI Pro + SAP Connector
+      </div>
+      <div style="background:#EAF3DE;border-radius:8px;padding:14px 18px;border-left:3px solid var(--green);font-size:13px;color:#166534;">
+        <strong>Zoho alternative:</strong> Zoho Creator / Blueprint / Analytics / WorkDrive — for customers not on Microsoft stack
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" class="bg-gray">
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge amber">DEVELOPMENT ROADMAP</div>
+      <h2 class="sec-h">3 versions — modular deployment</h2>
+      <p class="sec-sub">Deploy Version 1 in 14 weeks. Add Version 2 capabilities as your team grows. Version 3 delivers a full web-based PLM portal.</p>
+    </div>
+    <div class="roadmap">
+      <div class="rm-card" style="background:#E6F1FB;border-color:#85B7EB;">
+        <div class="rm-ver" style="color:#185FA5;">VERSION 1</div>
+        <div class="rm-name">Basic — Microsoft Kit</div>
+        <div class="rm-dur">14 weeks (±3 weeks)</div>
+        <ul class="rm-list">
+          <li>SharePoint — 7 lists setup</li>
+          <li>Power Apps — 5 screens, 10 FM</li>
+          <li>BOM Management — full module</li>
+          <li>Change Management (ECN/DCN)</li>
+          <li>Power Automate — 4 flows</li>
+          <li>Power BI dashboard</li>
+          <li>Excel data migration</li>
+          <li>Team training (online)</li>
+        </ul>
+        <span class="rm-cost" style="background:#B5D4F4;color:#0C447C;">₹25,000 one-time</span>
+      </div>
+      <div class="rm-card" style="background:#EAF3DE;border-color:#97C459;border:2px solid var(--teal);">
+        <div class="rm-ver" style="color:var(--teal);">VERSION 2</div>
+        <div class="rm-name">Premium — Extended</div>
+        <div class="rm-dur">+5 weeks from V1</div>
+        <ul class="rm-list">
+          <li>APQP module — 5-phase tracking</li>
+          <li>IATF 16949 compliance module</li>
+          <li>SAP / ERP integration</li>
+          <li>CAD file integration (Excel import)</li>
+          <li>Azure SQL migration</li>
+          <li>Power Pages supplier portal</li>
+          <li>LLM drawing assistant (basic)</li>
+          <li>Advanced Power BI Pro reports</li>
+        </ul>
+        <span class="rm-cost" style="background:#9FE1CB;color:#085041;">₹45,000 one-time</span>
+      </div>
+      <div class="rm-card" style="background:#EEEDFE;border-color:#AFA9EC;">
+        <div class="rm-ver" style="color:var(--purple);">VERSION 3</div>
+        <div class="rm-name">Web — Full Portal</div>
+        <div class="rm-dur">+15 weeks from V2</div>
+        <ul class="rm-list">
+          <li>Full web-based PLM portal</li>
+          <li>External supplier access</li>
+          <li>Full LLM AI drawing assistant</li>
+          <li>Real-time CAD integration</li>
+          <li>Dynamics 365 BC integration</li>
+          <li>Multi-tenant SaaS deployment</li>
+          <li>Custom domain — liteplm.in</li>
+          <li>Azure DevOps CI/CD pipeline</li>
+        </ul>
+        <span class="rm-cost" style="background:#CECBF6;color:#26215C;">Custom pricing</span>
+      </div>
+    </div>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--gray);">Note: Weeks may extend ±3 weeks depending on data complexity and team availability.</div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section id="compare">
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge red">COMPARISON</div>
+      <h2 class="sec-h">LitePLM vs market alternatives</h2>
+      <p class="sec-sub">Market PLMs are powerful but costly, slow to deploy, and oversized for SMEs. LitePLM delivers key PLM benefits at a fraction of the cost.</p>
+    </div>
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th style="width:180px;">Vendor</th>
+            <th style="width:130px;">Target / Price</th>
+            <th class="hl">LitePLM</th>
+            <th>Odoo PLM</th>
+            <th>Fuse PLM</th>
+            <th>Arena PLM</th>
+            <th>PTC Windchill</th>
+            <th>Aras Innovator</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>BOM management</td><td></td><td class="hl chk">✓ Full</td><td class="chk">✓</td><td class="chk">✓</td><td class="chk">✓</td><td class="chk">✓</td><td class="chk">✓</td></tr>
+          <tr><td>Change management</td><td></td><td class="hl chk">✓ Auto CN</td><td class="chk">✓</td><td class="chk">✓</td><td class="chk">✓</td><td class="chk">✓</td><td class="chk">✓</td></tr>
+          <tr><td>APQP / IATF tracking</td><td></td><td class="hl chk">✓ Built-in</td><td class="amb">~ Limited</td><td class="crs">✗</td><td class="amb">~</td><td class="chk">✓</td><td class="chk">✓</td></tr>
+          <tr><td>SAP integration</td><td></td><td class="hl chk">✓ API</td><td class="crs">✗ Separate</td><td class="crs">✗</td><td class="amb">~</td><td class="chk">✓</td><td class="chk">✓</td></tr>
+          <tr><td>AI drawing assistant</td><td></td><td class="hl chk">✓ LLM</td><td class="crs">✗</td><td class="crs">✗</td><td class="crs">✗</td><td class="amb">~</td><td class="crs">✗</td></tr>
+          <tr><td>License cost / user / year</td><td></td><td class="hl" style="color:var(--green);font-weight:700;">₹0 extra</td><td>~₹22,000</td><td>~₹22,000</td><td>High</td><td>₹100k+</td><td>Free core</td></tr>
+          <tr><td>Implementation time</td><td></td><td class="hl chk">14 weeks</td><td>3–6 mo</td><td>3–6 mo</td><td>6+ mo</td><td>6–24 mo</td><td>Heavy IT</td></tr>
+          <tr><td>Suitable for SME Tier-2</td><td></td><td class="hl chk">✓ Perfect</td><td class="amb">~ Partial</td><td class="amb">~ Partial</td><td class="crs">✗ Costly</td><td class="crs">✗ Overkill</td><td class="crs">✗ IT heavy</td></tr>
+          <tr><td>Customer owns data (NDA)</td><td></td><td class="hl chk">✓ Always</td><td class="amb">~</td><td class="amb">~</td><td class="crs">✗ Cloud lock</td><td class="crs">✗</td><td class="amb">~</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- LLM SECTION -->
+<section class="bg-gray">
+  <div class="wrapper">
+    <div class="sec-badge red">AI — VERSION 2+</div>
+    <h2 class="sec-h">LLM — AI Engineering Drawing Assistant</h2>
+    <p class="sec-sub">LitePLM is not just a data repository — it is an active assistant. Scan any engineering drawing and let AI extract your BOM automatically.</p>
+    <div class="llm-grid">
+      <div>
+        <div class="llm-feature">
+          <div class="llm-dot" style="background:#FEE2E2;border-radius:8px;"></div>
+          <div><h4>Automated drawing understanding</h4><p>Upload a PDF, image or CAD export of any assembly drawing. LLM reads both main assembly and child parts — extracting all technical details automatically.</p></div>
+        </div>
+        <div class="llm-feature">
+          <div class="llm-dot" style="background:#E6F1FB;border-radius:8px;"></div>
+          <div><h4>BOM generation from drawing</h4><p>Automatically identifies part names, numbers, materials, quantities and revision levels. Creates structured BOM table ready for approval or export.</p></div>
+        </div>
+        <div class="llm-feature">
+          <div class="llm-dot" style="background:#EAF3DE;border-radius:8px;"></div>
+          <div><h4>Process and operation details</h4><p>Reads drawing notes — extracts manufacturing process sequences, tolerances and special instructions. Highlights DFM issues automatically.</p></div>
+        </div>
+        <div class="llm-feature">
+          <div class="llm-dot" style="background:#EEEDFE;border-radius:8px;"></div>
+          <div><h4>Smart data entry + contextual query</h4><p>Auto-fills LitePLM fields — description, material, supplier, routing. Ask any question about the drawing and get an instant answer.</p></div>
+        </div>
+      </div>
+      <div class="llm-right">
+        <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:14px;">Example — AI extracts from scanned drawing:</div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px;">
+          <tr style="background:var(--navy);">
+            <th style="color:#fff;padding:6px 8px;text-align:left;">LitePLM #</th>
+            <th style="color:#fff;padding:6px 8px;">Part Name</th>
+            <th style="color:#fff;padding:6px 8px;">Rev</th>
+            <th style="color:#fff;padding:6px 8px;">QTY</th>
+            <th style="color:#fff;padding:6px 8px;">Supplier</th>
+            <th style="color:#fff;padding:6px 8px;">Released</th>
+          </tr>
+          <tr style="border-bottom:0.5px solid var(--border);">
+            <td style="padding:5px 8px;font-weight:600;color:var(--navy);">PLM0001</td>
+            <td style="padding:5px 8px;">Assembly1</td>
+            <td style="padding:5px 8px;">001</td>
+            <td style="padding:5px 8px;">1</td>
+            <td style="padding:5px 8px;">Suppl</td>
+            <td style="padding:5px 8px;color:var(--red);">No</td>
+          </tr>
+          <tr style="background:var(--lgray);border-bottom:0.5px solid var(--border);">
+            <td style="padding:5px 8px;font-weight:600;color:var(--navy);">PLM0002</td>
+            <td style="padding:5px 8px;">Disc_sidprt</td>
+            <td style="padding:5px 8px;">005</td>
+            <td style="padding:5px 8px;">2</td>
+            <td style="padding:5px 8px;">In house</td>
+            <td style="padding:5px 8px;color:var(--green);">Yes</td>
+          </tr>
+          <tr style="border-bottom:0.5px solid var(--border);">
+            <td style="padding:5px 8px;font-weight:600;color:var(--navy);">PLM0003</td>
+            <td style="padding:5px 8px;">Center_Disc</td>
+            <td style="padding:5px 8px;">001</td>
+            <td style="padding:5px 8px;">1</td>
+            <td style="padding:5px 8px;">Suppl</td>
+            <td style="padding:5px 8px;color:var(--red);">No</td>
+          </tr>
+          <tr style="background:var(--lgray);">
+            <td style="padding:5px 8px;font-weight:600;color:var(--navy);">PLM0005</td>
+            <td style="padding:5px 8px;">Shaft_sidprt</td>
+            <td style="padding:5px 8px;">008</td>
+            <td style="padding:5px 8px;">2</td>
+            <td style="padding:5px 8px;">Suppl</td>
+            <td style="padding:5px 8px;color:var(--green);">Yes</td>
+          </tr>
+        </table>
+        <div style="margin-top:12px;font-size:11px;color:var(--gray);">AI extracts: part name, number, ownership, revision, qty, sales code, customer PN, SAP no., find no., supplier, remarks and release status — all from a single drawing scan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GOVERNANCE -->
+<section>
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge blue">GOVERNANCE</div>
+      <h2 class="sec-h">Customer owns data — LitePLM provides workflow</h2>
+      <p class="sec-sub">LitePLM operates under a clear governance model. Your data stays in your Microsoft tenant. LitePLM never has direct access to your BOM or documents.</p>
+    </div>
+    <div class="gov-grid">
+      <div class="gov-card" style="background:#E6F1FB;border-color:#85B7EB;">
+        <h4 style="color:#0C447C;">Customer — owns data</h4>
+        <ul class="gov-list">
+          <li>Runs on customer's own Microsoft tenant</li>
+          <li>Owns all BOM and document data</li>
+          <li>Controls all file and user access</li>
+          <li>Data never leaves customer environment</li>
+          <li>Audit trail visible to customer admin only</li>
+        </ul>
+      </div>
+      <div class="gov-card" style="background:#EAF3DE;border-color:#97C459;">
+        <h4 style="color:#166534;">LitePLM — provides service</h4>
+        <ul class="gov-list">
+          <li>Provides workflow coding and configuration</li>
+          <li>Backend support and maintenance</li>
+          <li>Manages license guidance and upgrades</li>
+          <li>No direct access to BOM or documents</li>
+          <li>Service contract: NDA + License Limit</li>
+        </ul>
+      </div>
+    </div>
+    <div style="margin-top:20px;background:var(--lgray);border-radius:8px;padding:16px 20px;font-size:12px;color:var(--gray);">
+      <strong style="color:var(--navy);">NDA key points:</strong> Parties — Vendor + Customer · Confidential info defined (BOMs, designs, pricing, supplier data) · Obligations — both parties keep info secret · Term: 3–5 years · On project end: vendor deletes/returns all data · Legal penalties if breached.
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="bg-gray">
+  <div class="wrapper">
+    <div class="center">
+      <div class="sec-badge green">PRICING</div>
+      <h2 class="sec-h">Transparent pricing — you own the system</h2>
+      <p class="sec-sub">No recurring per-user fees. No hidden costs. One-time implementation. Estimated annual license cost for 20 users: ₹3.8L (Microsoft toolkit).</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">STARTER — DIY</div>
+        <div class="price-amt">₹0 <span>/ month</span></div>
+        <div class="price-desc">M365 Basic already includes everything needed for Version 1. Self-implement using our guide.</div>
+        <ul class="price-list">
+          <li>SharePoint — 7 lists</li>
+          <li>Power Apps — 5 screens</li>
+          <li>Power Automate — 4 flows</li>
+          <li>Power BI Desktop (free)</li>
+          <li>Up to 10 users</li>
+          <li>Self-implementation guide</li>
+        </ul>
+        <a href="#contact" class="price-btn pb-outline">Get free guide</a>
+      </div>
+      <div class="price-card feat">
+        <div class="feat-tag">Most popular</div>
+        <div class="price-tier">VERSION 1 — IMPLEMENTATION</div>
+        <div class="price-amt">₹25,000 <span>one-time</span></div>
+        <div class="price-desc">We build and configure LitePLM V1 for your company — ready in 14 weeks. You own everything.</div>
+        <ul class="price-list">
+          <li>Everything in Starter</li>
+          <li>Excel data migrated to SharePoint</li>
+          <li>Custom part number logic built</li>
+          <li>All 10 BOM form modules</li>
+          <li>Change Management module</li>
+          <li>Power BI BOM dashboard</li>
+          <li>Team training (online, 2 sessions)</li>
+          <li>2 weeks post go-live support</li>
+        </ul>
+        <a href="#contact" class="price-btn pb-teal">Request implementation</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">VERSION 2 — PREMIUM</div>
+        <div class="price-amt">₹45,000 <span>one-time</span></div>
+        <div class="price-desc">Adds APQP, IATF, SAP integration, LLM AI drawing assistant and Azure SQL upgrade.</div>
+        <ul class="price-list">
+          <li>Everything in V1</li>
+          <li>APQP module — 5-phase tracking</li>
+          <li>IATF 16949 compliance module</li>
+          <li>SAP / ERP API integration</li>
+          <li>LLM AI drawing assistant</li>
+          <li>Azure SQL migration</li>
+          <li>Power Pages supplier portal</li>
+          <li>Dedicated support plan — 3 months</li>
+        </ul>
+        <a href="#contact" class="price-btn pb-outline">Get V2 quote</a>
+      </div>
+    </div>
+    <div style="margin-top:20px;background:#E6F1FB;border-radius:8px;padding:14px 20px;font-size:13px;color:#185FA5;text-align:center;">
+      <strong>Reference license cost for 20 users:</strong> 1 Super Admin (₹3,265) + 2 Admins (₹6,530) + 5 Users (₹16,325) + 10 Viewers Basic (₹7,700) + 2 Viewers Advanced (₹3,320) = <strong>₹37,140/month ≈ ₹3.8L/year</strong> — only license cost, implementation separate.
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-sec" id="contact">
+  <div class="sec-badge" style="background:rgba(255,255,255,0.12);color:#9FE1CB;border:1px solid rgba(255,255,255,0.2);">GET STARTED</div>
+  <h2>Ready to replace Excel with LitePLM?</h2>
+  <p>Enter your email for the free implementation guide — or schedule a demo with our team for your specific use case.</p>
+  <div class="cta-row">
+    <input class="cta-input" type="email" placeholder="Enter your work email">
+    <button class="cta-sub">Get free guide</button>
+  </div>
+  <div class="cta-note">Or contact us: <strong>hello@liteplm.in</strong> · WhatsApp: <strong>+91 98765 43210</strong><br>Pune, Maharashtra — serving automotive Tier-2 suppliers across India</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-logo">Lite<span>PLM</span></div>
+      <p class="foot-desc">Lightweight Product Lifecycle Management for Indian automotive Tier-2 and Tier-3 suppliers. Built on Microsoft 365 and Zoho. IATF 16949 compliant. Customer owns all data.</p>
+    </div>
+    <div class="foot-col">
+      <h5>MODULES</h5>
+      <ul>
+        <li><a href="#modules">BOM Management</a></li>
+        <li><a href="#modules">Change Management</a></li>
+        <li><a href="#modules">APQP Tracking</a></li>
+        <li><a href="#modules">IATF 16949</a></li>
+        <li><a href="#modules">SAP Integration</a></li>
+        <li><a href="#modules">AI Drawing Assistant</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>RESOURCES</h5>
+      <ul>
+        <li><a href="#">Implementation guide</a></li>
+        <li><a href="#">RACI template</a></li>
+        <li><a href="#">SharePoint setup</a></li>
+        <li><a href="#">Power Apps guide</a></li>
+        <li><a href="#">IATF checklist</a></li>
+        <li><a href="#">Release workflow</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h5>COMPANY</h5>
+      <ul>
+        <li><a href="#">About LitePLM</a></li>
+        <li><a href="#">Governance model</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#">Privacy / NDA</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 LitePLM. Built for Indian automotive suppliers. Pune, Maharashtra.</span>
+    <span>Microsoft 365 · Zoho · IATF 16949 · APQP · BOM · ECN</span>
+  </div>
+</footer>
+
+</body>
+</html>
